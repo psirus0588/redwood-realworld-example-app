@@ -35,7 +35,7 @@ export const schema = gql`
   }
 
   input CreateArticleInput {
-    slug: String!
+    slug: String
     title: String!
     description: String!
     body: String!
