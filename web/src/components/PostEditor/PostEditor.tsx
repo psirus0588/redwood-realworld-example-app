@@ -1,7 +1,6 @@
 import {
   Form,
   TextField,
-  TextAreaField,
   Submit,
   FieldError,
   FormError,
@@ -12,7 +11,7 @@ import { toast } from '@redwoodjs/web/toast'
 import { useState } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import { navigate, routes } from '@redwoodjs/router'
-
+import MDEditor from '@uiw/react-md-editor'
 const CREATE_ARTICLE = gql`
   mutation CreateArticleMutation($input: CreateArticleInput!) {
     createArticle(input: $input) {
@@ -35,6 +34,8 @@ const PostEditor = ({ post }) => {
   const [tagSet, setTagSet] = useState(
     new Set(post?.tagList.map((tag) => tag.name))
   )
+  const [markDownBody, setMarkDownBody] = useState(post?.body)
+
   const [create, { loading: loadingCreate, error: errorForCreate }] =
     useMutation(CREATE_ARTICLE, {
       onCompleted: () => {
@@ -55,6 +56,7 @@ const PostEditor = ({ post }) => {
   const onSubmit = (input) => {
     input.authorId = currentUser?.id
     input.tagList = [...tagSet]
+    input.body = markDownBody
     if (post) {
       update({ variables: { id: post.id, input } })
     } else {
@@ -107,19 +109,21 @@ const PostEditor = ({ post }) => {
                   <FieldError name="description" className="rw-field-error" />
                 </fieldset>
 
-                <fieldset className="form-group">
-                  <TextAreaField
-                    name="body"
-                    validation={{ required: true }}
-                    errorClassName="form-control form-control-lg rw-input-error"
-                    className="form-control"
-                    rows="8"
-                    placeholder="Write your article (in markdown)"
-                    defaultValue={post?.body}
-                  ></TextAreaField>
-                  <FieldError name="body" className="rw-field-error" />
-                </fieldset>
-
+                <div className="container" data-color-mode="light">
+                  <fieldset className="form-group">
+                    <MDEditor
+                      value={markDownBody}
+                      preview={'edit'}
+                      onChange={setMarkDownBody}
+                    />
+                  </fieldset>
+                  <fieldset className="form-group">
+                    <MDEditor.Markdown
+                      source={markDownBody}
+                      style={{ whiteSpace: 'pre-wrap' }}
+                    />
+                  </fieldset>
+                </div>
                 <fieldset className="form-group">
                   <TextField
                     name="tagList"

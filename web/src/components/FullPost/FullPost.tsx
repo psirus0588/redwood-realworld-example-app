@@ -1,18 +1,13 @@
 import CommentList from '../CommentList/CommentList'
 import CommentSubmitBox from '../CommentSubmitBox/CommentSubmitBox'
 import PostMeta from '../PostMeta/PostMeta'
-import ReactMarkdown from 'react-markdown'
 import { useAuth } from '@redwoodjs/auth'
 import { Link, routes } from '@redwoodjs/router'
-import { useState } from 'react'
 import { CommentContextProvider } from 'src/misc/CommentContextProvider'
+import MDEditor from '@uiw/react-md-editor'
 
 const FullPost = ({ post }) => {
   const { isAuthenticated } = useAuth()
-  // const [_, setState] = useState(0)
-  // const refresh = () => {
-  //   setState((state) => state + 1)
-  // }
   return (
     <div className="article-page">
       <div className="banner">
@@ -30,7 +25,12 @@ const FullPost = ({ post }) => {
               over the past few years.
             </p>
             <h2 id="introducing-ionic">Introducing RealWorld.</h2> */}
-            <ReactMarkdown>{post?.body}</ReactMarkdown>
+            <div className="container" data-color-mode="light">
+              <MDEditor.Markdown
+                source={post?.body}
+                style={{ whiteSpace: 'pre-wrap' }}
+              />
+            </div>
             {post?.tagList?.length > 0 && (
               <ul className="tag-list">
                 {post?.tagList?.map((tag) => (

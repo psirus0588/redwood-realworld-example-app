@@ -12,18 +12,23 @@ const CREATE_ARTICLE_MUTATION = gql`
 `
 
 const NewArticle = () => {
-  const [createArticle, { loading, error }] = useMutation(CREATE_ARTICLE_MUTATION, {
-    onCompleted: () => {
-      toast.success('Article created')
-      navigate(routes.articles())
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-  })
+  const [createArticle, { loading, error }] = useMutation(
+    CREATE_ARTICLE_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success('Article created')
+        navigate(routes.articles())
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    }
+  )
 
   const onSave = (input) => {
-    const castInput = Object.assign(input, { authorId: parseInt(input.authorId), })
+    const castInput = Object.assign(input, {
+      authorId: parseInt(input.authorId),
+    })
     createArticle({ variables: { input: castInput } })
   }
 
